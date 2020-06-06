@@ -30,15 +30,15 @@ class PointsController {
        const insertedId =  await trx('points').insert(point);
         
         const point_id = insertedId[0];
-    
-        const pointItens = items.map((iten_id: number) => {
+
+        const pointItems = items.map((item_id: number) => {
             return {
-                iten_id,
+                item_id,
                 point_id,
             }
         })
     
-        await trx('point_itens').insert(pointItens);
+        await trx('point_items').insert(pointItems);
 
         await trx.commit()
     
@@ -57,26 +57,26 @@ class PointsController {
             return response.status(400).json({ message: 'Point not found' })
         }
         
-        const itens = await knex('itens')
-            .join('point_itens', 'itens.id', '=', 'point_itens.iten_id')
-            .where('point_itens.point_id', id)
-        return response.json({ points, itens})
+        const Items = await knex('Items')
+            .join('point_items', 'Items.id', '=', 'point_items.item_id')
+            .where('point_items.point_id', id)
+        return response.json({ points, Items})
         
     }
 
     async index(request: Request, response: Response){
-        const { city, uf, itens } = request.query
-
-        console.log(itens);
-        const parsedItens = String(itens)
+        const { city, uf, Items } = request.query
+        
+        console.log(Items);
+        const parsedItems = String(Items)
             .split(',')
-            .map(iten => Number(iten.trim()))
+            .map(item => Number(item.trim()))
 
-        console.log(parsedItens);
+        console.log(parsedItems);
         
         const points = await knex('points')
-            .join('point_itens', 'points.id', '=', 'point_itens.point_id')
-            .whereIn('point_itens.iten_id', parsedItens)
+            .join('point_items', 'points.id', '=', 'point_items.point_id')
+            .whereIn('point_items.item_id', parsedItems)
             .where('city', String(city))
             .where('uf', String(uf))
             .distinct()

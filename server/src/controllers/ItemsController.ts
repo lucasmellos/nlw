@@ -1,12 +1,12 @@
 import {Request, Response} from 'express'
 import knex from '../database/connection'
 
-class ItensController {
+class ItemsController {
 
     async  index(request: Request, response: Response){
-        const itens = await knex('itens').select('*');
+        const Items = await knex('Items').select('*');
 
-        const serializedItens = itens.map(item => {
+        const serializedItems = Items.map(item => {
             return {
                 id: item.id,
                 title: item.title,
@@ -14,8 +14,8 @@ class ItensController {
             }
         })
 
-        return response.json(serializedItens);
+        return response.json(serializedItems);
     }
 }
 
-export default ItensController
+export default ItemsController
